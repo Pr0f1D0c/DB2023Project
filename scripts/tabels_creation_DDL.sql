@@ -35,8 +35,7 @@ CREATE TABLE IF NOT EXISTS rating_history (
 CREATE TABLE IF NOT EXISTS tournament (
     name VARCHAR(255) NOT NULL PRIMARY KEY,
     year INT,
-    site VARCHAR(255),
-    winner INT
+    site VARCHAR(255)
 );
 
 CREATE TABLE IF NOT EXISTS opening (
