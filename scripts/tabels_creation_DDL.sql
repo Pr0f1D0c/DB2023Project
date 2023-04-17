@@ -9,14 +9,14 @@ CREATE TABLE IF NOT EXISTS chess.game (
     opening VARCHAR(3),
     variation VARCHAR(255),
     dt DATE,
-    tournament VARCHAR(255),
+    tournament INTEGER,
 
     CONSTRAINT fk_game_white FOREIGN KEY (white)
         REFERENCES chess.player(FIDE) ON DELETE CASCADE,
     CONSTRAINT fk_game_black FOREIGN KEY (black)
         REFERENCES chess.player(FIDE) ON DELETE CASCADE,
     CONSTRAINT fk_game_tournament FOREIGN KEY (tournament)
-        REFERENCES chess.tournament(name) ON DELETE SET NULL,
+        REFERENCES chess.tournament(id) ON DELETE SET NULL,
     CONSTRAINT fk_game_opening FOREIGN KEY (opening)
         REFERENCES chess.opening(ECO) ON DELETE SET NULL,
     CONSTRAINT fk_game_variation FOREIGN KEY (opening, variation)
@@ -47,7 +47,8 @@ CREATE TABLE IF NOT EXISTS chess.rating_history (
 );
 
 CREATE TABLE IF NOT EXISTS chess.tournament (
-    name VARCHAR(255) NOT NULL PRIMARY KEY,
+    id INTEGER NOT NULL PRIMARY KEY,
+    name VARCHAR(255),
     year INT,
     site VARCHAR(255)
 );
