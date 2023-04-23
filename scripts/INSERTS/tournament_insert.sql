@@ -1,5 +1,7 @@
 -- COPY chess.tournament (id, name, year, site)
 --     from '../../data/csv/tournament.csv';
 
-INSERT INTO chess.tournament (id, name, year, site)
-    VALUES (100500, 'FIDE Women''s Grand Prix' , 2023, 'Nicosia, Cyprus');
+SELECT setval('chess.tournament_id_seq', (SELECT MAX(id) FROM chess.tournament) + 1);
+
+INSERT INTO chess.tournament (name, year, site)
+    VALUES ('FIDE Women''s Grand Prix' , 2023, 'Nicosia, Cyprus');

@@ -12,7 +12,7 @@ CREATE TABLE IF NOT EXISTS chess.player (
 );
 
 CREATE TABLE IF NOT EXISTS chess.tournament (
-    id INTEGER NOT NULL PRIMARY KEY,
+    id SERIAL NOT NULL PRIMARY KEY,
     name VARCHAR(255),
     year INT,
     site VARCHAR(255)
