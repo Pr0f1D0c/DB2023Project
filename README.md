@@ -100,13 +100,45 @@
 - nickname - ник на chess.com,
 - country - страна,
 - last_transaction - номер последней транзакции по получению премиума (или null, если нет премиума)
-- login - логин на сайте
-(
-    id INT NOT NULL PRIMARY KEY,
-    nickname TEXT,
-    country VARCHAR(3),
-    last_transaction INTEGER,
-    login varchar(63)
-);
+- login - логин
+- rating - рейтинг
+
+| Attribute         | Constraints                          |
+|-------------------|--------------------------------------|
+| id                | INT NOT NULL PRIMARY KEY             |
+| nickname          | TEXT                                 |
+| country           | VARCHAR(3)                           |
+| last_transaction  | INTEGER, DEFAULT null                |
+| login             | VARCHAR(63)                          |
+| rating            | INTEGER, DEFAULT 0                   |
+
+### amateur_game
+Таблица с записями игр игроков-любителей.
+- **id** - индекс игры в моей системе,
+- white - индекс игрока-любителя в моей системе, игравшего за белых,
+- black - индекс игрока-любителя в моей системе, игравшего за черных,
+- result - Строка, отражающая результат партии ("1-0" в случае победы белых, "0-1" в случае победы черных, "1/2-1/2" в случае ничьей)
+- opening - ECO дебюта партии,
+- dt - дата партии.
+
+| Attribute |           Constraints           |
+|:---------:|:-------------------------------:|
+|     id    |   SERIAL PRIMARY KEY NOT NULL   |
+|   white   | INT NOT NULL, FK(chess.amateur) |
+|   black   | INT NOT NULL, FK(chess.amateur) |
+|  result   |       VARCHAR(7), DEFAULT       |
+|  opening  |          VARCHAR(3), -          |
+|     dt    |          DATE NOT NULL          |
+
+### premium_transaction
+Информация о транзакциях покупки игроками премиум-аккаунтов. 
+
+| Attribute        | Constraints                                |
+|:-----------------|:-------------------------------------------|
+| id               | SERIAL NOT NULL PRIMARY KEY                |
+| player           | INT, FK (chess.amateur) ON DELETE SET NULL |
+| dt               | DATE NOT NULL                              |
+| premium_duration | INTERVAL NOT NULL                          |
+| card_number      | VARCHAR(19) NOT NULL                       |
 
 Структура БД представлена в файле `logical-model.jpg`. Более общая концептуальная модель в файле `conceptual-model.jpg`.
