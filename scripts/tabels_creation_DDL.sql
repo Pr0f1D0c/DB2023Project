@@ -68,7 +68,7 @@ CREATE TABLE IF NOT EXISTS chess.amateur (
 );
 
 CREATE TABLE IF NOT EXISTS chess.amateur_game (
-    id INT PRIMARY KEY,
+    id SERIAL PRIMARY KEY,
     white INT NOT NULL,
     black INT NOT NULL,
     result VARCHAR(7) DEFAULT '1/2-1/2',
@@ -87,12 +87,12 @@ CREATE TABLE IF NOT EXISTS chess.amateur_game (
 
 
 CREATE TABLE IF NOT EXISTS chess.premium_transaction (
-    id INT NOT NULL PRIMARY KEY,
+    id SERIAL NOT NULL PRIMARY KEY,
     player INT,
     dt DATE NOT NULL,
     premium_duration INTERVAL NOT NULL,
-    card_number VARCHAR(16) NOT NULL,
+    card_number VARCHAR(19) NOT NULL,
 
     CONSTRAINT fk_premium_amateur FOREIGN KEY (player)
         REFERENCES chess.amateur(id) ON DELETE SET NULL
-)
+);
