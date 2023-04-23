@@ -26,7 +26,7 @@ CREATE TABLE IF NOT EXISTS chess.opening (
 );
 
 CREATE TABLE IF NOT EXISTS chess.game (
-    id INT PRIMARY KEY,
+    id SERIAL PRIMARY KEY,
     white INT,
     black INT,
     result VARCHAR(7) DEFAULT '1/2-1/2',
