@@ -62,8 +62,9 @@ CREATE TABLE IF NOT EXISTS chess.amateur (
     id INT NOT NULL PRIMARY KEY,
     nickname TEXT,
     country VARCHAR(3),
-    last_transaction INTEGER NOT NULL,
-    login varchar(63)
+    last_transaction INTEGER DEFAULT null,
+    login varchar(63),
+    rating integer default 0
 );
 
 CREATE TABLE IF NOT EXISTS chess.amateur_game (
