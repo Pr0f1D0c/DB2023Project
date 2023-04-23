@@ -2,13 +2,13 @@ CREATE SCHEMA IF NOT EXISTS chess;
 
 CREATE TABLE IF NOT EXISTS chess.player (
     FIDE INT NOT NULL PRIMARY KEY,
-    ELO INT,
-    full_name VARCHAR(255),
-    last_update DATE DEFAULT now()::date,
-    title VARCHAR(3),
+    firstname VARCHAR(255),
+    surname VARCHAR(255),
     country VARCHAR(3),
     sex CHAR(1),
-    birthdate DATE
+    birthdate INTEGER,
+    title VARCHAR(3),
+    ELO INT
 );
 
 CREATE TABLE IF NOT EXISTS chess.tournament (
@@ -20,19 +20,9 @@ CREATE TABLE IF NOT EXISTS chess.tournament (
 
 CREATE TABLE IF NOT EXISTS chess.opening (
     ECO CHAR(3) NOT NULL PRIMARY KEY,
-    name VARCHAR(255) NOT NULL,
-    color BOOLEAN,
+    white VARCHAR(255),
+    black VARCHAR(255),
     pgn VARCHAR(255) NOT NULL
-);
-
-CREATE TABLE IF NOT EXISTS chess.variation (
-    ECO CHAR(3) NOT NULL,
-    variation VARCHAR(255) NOT NULL,
-    pgn VARCHAR(255) NOT NULL,
-    PRIMARY KEY (ECO, variation),
-
-    CONSTRAINT fk_variation_opening FOREIGN KEY (ECO)
-        REFERENCES chess.opening(ECO) ON DELETE CASCADE
 );
 
 CREATE TABLE IF NOT EXISTS chess.game (
@@ -40,10 +30,8 @@ CREATE TABLE IF NOT EXISTS chess.game (
     white INT,
     black INT,
     result VARCHAR(7) DEFAULT '1/2-1/2',
-    pgn VARCHAR(1023),
     opening VARCHAR(3),
-    variation VARCHAR(255),
-    dt DATE,
+    dt VARCHAR(10),
     tournament INTEGER,
 
     CONSTRAINT fk_game_white FOREIGN KEY (white)
@@ -53,9 +41,7 @@ CREATE TABLE IF NOT EXISTS chess.game (
     CONSTRAINT fk_game_tournament FOREIGN KEY (tournament)
         REFERENCES chess.tournament(id) ON DELETE SET NULL,
     CONSTRAINT fk_game_opening FOREIGN KEY (opening)
-        REFERENCES chess.opening(ECO) ON DELETE SET NULL,
-    CONSTRAINT fk_game_variation FOREIGN KEY (opening, variation)
-        REFERENCES chess.variation(ECO, variation) ON DELETE SET NULL
+        REFERENCES chess.opening(ECO) ON DELETE SET NULL
 );
 
 
@@ -64,7 +50,6 @@ CREATE TABLE IF NOT EXISTS chess.rating_history (
     FIDE INT NOT NULL,
     dt DATE NOT NULL,
     ELO INT NOT NULL,
-    delta INT,
     title VARCHAR(5),
     PRIMARY KEY (FIDE, dt),
 
@@ -96,9 +81,7 @@ CREATE TABLE IF NOT EXISTS chess.amateur_game (
     CONSTRAINT fk_amateur_game_black FOREIGN KEY (black)
         REFERENCES chess.amateur(id) ON DELETE CASCADE,
     CONSTRAINT fk_amateur_game_opening FOREIGN KEY (opening)
-        REFERENCES chess.opening(ECO) ON DELETE SET NULL,
-    CONSTRAINT fk_amateur_game_variation FOREIGN KEY (opening, variation)
-        REFERENCES chess.variation(ECO, variation) ON DELETE SET NULL
+        REFERENCES chess.opening(ECO) ON DELETE SET NULL
 );
 
 
