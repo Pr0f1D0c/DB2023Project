@@ -72,9 +72,7 @@ CREATE TABLE IF NOT EXISTS chess.amateur_game (
     white INT NOT NULL,
     black INT NOT NULL,
     result VARCHAR(7) DEFAULT '1/2-1/2',
-    pgn VARCHAR(1023),
     opening VARCHAR(3),
-    variation VARCHAR(255),
     dt DATE,
 
     CONSTRAINT fk_amateur_game_white FOREIGN KEY (white)
