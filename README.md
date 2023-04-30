@@ -7,23 +7,10 @@
 - Записи шахматных партий,
 - Информация о сильнейших шахматистиах, входящих в организацию FIDE.
 - Шахматные дебюты и их вариации,
-- Некоторые шахматные турниры.
-
-### Партии (game)
-Атрибуты:
-- **id** - уникальный номер партии в базе данных,
-- white - FIDE-индекс игрока за белых,
-- black - FIDE-индекс игрока за черных,
-- result - Строка, отражающая результат партии ("1-0" в случае победы белых, "0-1" в случае победы черных, "1/2-1/2" в случае ничьей)
-- pgn - Запись партии в шахматной нотации pgn. Пример парии (Kasparov vs. Deep Blue Rematch):
-`1.e4 c6 2.d4 d5 3.Nc3 dxe4 4.Nxe4 Nd7 5.Ng5 Ngf6 6.Bd3 e6 7.N1f3 h6
-8.Nxe6 Qe7 9.O-O fxe6 10.Bg6+ Kd8 
-11.Bf4 b5 12.a4 Bb7 13.Re1 Nd5 14.Bg3 Kc8 15.axb5 cxb5 16.Qd3 Bc6 
-17.Bf5 exf5 18.Rxe7 Bxe7 19.c4 1-0`,
-- opening - Индекс дебюта в международной системе ECO,
-- variation - Название вариации дебюта,
-- dt - Дата партии,
-- tournament - название туринира, в рамках которого проходила партия, либо NULL.
+- Некоторые шахматные турниры,
+- Информация об игроках-любителях,
+- Информация о любительских партиях,
+- Информация о платежных транзакциях для покупки премиум-статуса игроками-любителями.
 
 ### Игроки (player)
 - **FIDE** - индекс игрока в международной системе организации ФИДЕ.
@@ -35,19 +22,16 @@
 - sex - Пол шахматиста (`M` / `W`).
 - birthdate - дата рождения шахматиста.
 
-### raiting_history
-Дополнительная таблица с историей обновления рейтинга и разраядов игроков (выбран тип SCD 4).
-- **FIDE** - Индекс игрока в международной системе организации ФИДЕ.
-- **dt** - Дата обновления рейтинга.
-- ELO - Рейтинг игрока по международной метрике ELO, используемой FIDE.
-- delta - Изменение рейтинга за последний период.
-- title - Разряд в момент расчета рейтинга.
-
-### tournament
-- **name** - Название турнира/события.
-- year - Год события в формате числа.
-- site - Место проведеняи события (например, Moscow RUS).
-- winner - FIDE победителя соревнования.
+|  Атрибут  |       Ограничения        |
+|:---------:|:------------------------:|
+|    ELO    | INT NOT NULL PRIMARY KEY |
+| firstname |            -             |
+|  surname  |            -             |
+|  country  |            -             |
+|    sex    |            -             |
+| birthdate |            -             |
+|   title   |            -             |
+|    ELO    |            -             |
 
 ### opening
 - **ECO** - Индекс дебюта в международной системе ECO.
@@ -55,10 +39,106 @@
 - color - Цвет, за которой играется дебют.
 - pgn - Запись ходов дебюта в формате pgn.
 
-### variation
-Дополнительная таблица с вариациями дебютов
-- **ECO** - Индекс дебюта в международной системе ECO.
-- **variation** - название вариации дебюта (например, `Anderssen Opening, General`).
-- pgn - Запись ходов в формате pgn.
+| Атрибут |          Ограничения           |
+|:-------:|:------------------------------:|
+|   ECO   | PRIMARY KEY, CHAR(3), NOT NULL |
+|  white  |               -                |
+|  black  |               -                |
+|   pgn   |     NOT NULL, VARCHAR(255)     |
+
+### tournament
+- **id** - уникальный номер события в рамках моей базы данных.
+- name - Название турнира/события.
+- year - Год события в формате числа.
+- site - Место проведеняи события (например, Moscow RUS).
+
+| Attribute |         Constraints         |
+|:---------:|:---------------------------:|
+|    id     | SERIAL NOT NULL PRIMARY KEY |
+|   name    |              -              |
+|   year    |              -              |
+|   site    |              -              |
+
+### Партии (game)
+Атрибуты:
+- **id** - уникальный номер партии в базе данных,
+- white - FIDE-индекс игрока за белых,
+- black - FIDE-индекс игрока за черных,
+- result - Строка, отражающая результат партии ("1-0" в случае победы белых, "0-1" в случае победы черных, "1/2-1/2" в случае ничьей)
+- opening - Индекс дебюта в международной системе ECO,
+- dt - Дата партии,
+- tournament - название туринира, в рамках которого проходила партия, либо NULL.
+
+| Attribute  |                              Constraints                              |
+|:----------:|:---------------------------------------------------------------------:|
+|     id     |                          SERIAL NOT NULL, PK                          |
+|   white    |     INT, FK (chess.player), ON DELETE CASCADE, ON UPDATE CASCADE      |
+|   black    |     INT, FK (chess.player), ON DELETE CASCADE, ON UPDATE CASCADE      |
+|   result   |                     VARCHAR(7) DEFAULT '1/2-1/2'                      |
+|  opening   | VARCHAR(3), FK (chess.opening), ON DELETE SET NULL, ON UPDATE CASCADE |
+|     dt     |        VARCHAR(10), FK (chess.tournament), ON DELETE SET NULL         |
+| tournament |   INT, FK (chess.tournament), ON DELETE SET NULL, ON UPDATE CASCADE   |
+
+
+### raiting_history
+Дополнительная таблица с историей обновления рейтинга и разраядов игроков (выбран тип SCD 4).
+- **FIDE** - Индекс игрока в международной системе организации ФИДЕ.
+- **dt** - Дата обновления рейтинга.
+- ELO - Рейтинг игрока по международной метрике ELO, используемой FIDE.
+- title - Разряд в момент расчета рейтинга.
+
+| Attribute |           Constraints           |
+|:---------:|:-------------------------------:|
+|   FIDE    | INT NOT NULL, FK (chess.player) |
+|    dt     |          DATE NOT NULL          |
+|    ELO    |          INT NOT NULL           |
+|   title   |          VARCHAR(5), -          |
+
+### amateur 
+Таблица с информацией об игроках-любителях.
+- **id** - Индекс игрока на chess.com,
+- nickname - ник на chess.com,
+- country - страна,
+- last_transaction - номер последней транзакции по получению премиума (или null, если нет премиума)
+- login - логин
+- rating - рейтинг
+
+| Attribute         | Constraints                          |
+|-------------------|--------------------------------------|
+| id                | INT NOT NULL PRIMARY KEY             |
+| nickname          | TEXT                                 |
+| country           | VARCHAR(3)                           |
+| last_transaction  | INTEGER, DEFAULT null                |
+| login             | VARCHAR(63)                          |
+| rating            | INTEGER, DEFAULT 0                   |
+
+### amateur_game
+Таблица с записями игр игроков-любителей.
+- **id** - индекс игры в моей системе,
+- white - индекс игрока-любителя в моей системе, игравшего за белых,
+- black - индекс игрока-любителя в моей системе, игравшего за черных,
+- result - Строка, отражающая результат партии ("1-0" в случае победы белых, "0-1" в случае победы черных, "1/2-1/2" в случае ничьей)
+- opening - ECO дебюта партии,
+- dt - дата партии.
+
+| Attribute |           Constraints           |
+|:---------:|:-------------------------------:|
+|     id    |   SERIAL PRIMARY KEY NOT NULL   |
+|   white   | INT NOT NULL, FK(chess.amateur) |
+|   black   | INT NOT NULL, FK(chess.amateur) |
+|  result   |       VARCHAR(7), DEFAULT       |
+|  opening  |          VARCHAR(3), -          |
+|     dt    |          DATE NOT NULL          |
+
+### premium_transaction
+Информация о транзакциях покупки игроками премиум-аккаунтов. 
+
+| Attribute        | Constraints                                |
+|:-----------------|:-------------------------------------------|
+| id               | SERIAL NOT NULL PRIMARY KEY                |
+| player           | INT, FK (chess.amateur) ON DELETE SET NULL |
+| dt               | DATE NOT NULL                              |
+| premium_duration | INTERVAL NOT NULL                          |
+| card_number      | VARCHAR(19) NOT NULL                       |
 
 Структура БД представлена в файле `logical-model.jpg`. Более общая концептуальная модель в файле `conceptual-model.jpg`.
