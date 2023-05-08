@@ -20,6 +20,10 @@ begin;
 \i ./premium_transaction_insert.sql
 \i ./amateur_game_insert.sql
 
+
+\i ../cosmetic_views/credit_card_view.sql
+\i ../cosmetic_views/game_view.sql
+
 commit;
 OMG
 
