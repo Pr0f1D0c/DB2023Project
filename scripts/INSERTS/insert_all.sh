@@ -4,6 +4,7 @@ begin;
 \i ../tabels_creation_DDL.sql
 \i ../triggers/premium_insert_trigger.sql
 \i ../triggers/update_player_rating_trigger.sql
+\i ../triggers/player_rating_update.sql
 
 \copy chess.player from '../../data/csv/player.csv' DELIMITER ',' CSV HEADER;
 \copy chess.opening from '../../data/csv/opening.csv' DELIMITER ',' CSV HEADER;
@@ -19,7 +20,6 @@ begin;
 \i ./amateur_insert.sql
 \i ./premium_transaction_insert.sql
 \i ./amateur_game_insert.sql
-
 
 \i ../cosmetic_views/credit_card_view.sql
 \i ../cosmetic_views/game_view.sql
